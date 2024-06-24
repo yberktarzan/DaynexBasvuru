@@ -10,6 +10,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="resimler-tab" data-bs-toggle="tab" data-bs-target="#resimler" type="button" role="tab" aria-controls="resimler" aria-selected="false">Resimler</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="indirim-tab" data-bs-toggle="tab" data-bs-target="#indirim" type="button" role="tab" aria-controls="indirim" aria-selected="false">İndirim</button>
+        </li>
     </ul>
     <div class="tab-content" id="mainTabContent">
         <!-- Genel Tab -->
@@ -209,7 +212,7 @@
 
             <div class="tab-content" id="resimlerLangTabContent">
                 <div class="tab-pane fade show active" id="resimler-tr" role="tabpanel" aria-labelledby="resimler-tr-tab">
-        
+
                     <div class="mb-3">
                         <label for="ana_resim" class="form-label">Ana Resim</label>
                         <input type="file" class="form-control" id="ana_resim" name="ana_resim">
@@ -221,10 +224,28 @@
                 </div>
             </div>
         </div>
+
+        <!-- İndirim Tab -->
+        <div class="tab-pane fade" id="indirim" role="tabpanel" aria-labelledby="indirim-tab">
+
+            <div class="tab-content" id="indirimLangTabContent">
+
+                <div id="repeater-form">
+
+                </div>
+                <button class="btn btn-primary mt-3" id="add-row" type="button">Yeni Satır Ekle</button>
+            </div>
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3 mb-5">Kaydet</button>
 </form>
+
+
+
+
+
+
 
 
 <script>
@@ -250,56 +271,134 @@
 </script>
 
 
-
 <script>
     $(document).ready(function() {
-        $('form').submit(function(event) {
-            event.preventDefault(); // Sayfanın yenilenmesini engeller
+    // Array to store form data including repeater data
+    var formData = [];
 
-            var formData = new FormData($(this)[0]); // Form verilerini FormData nesnesine dönüştür
+    // Event listener for adding new row
+    $('#add-row').click(function() {
+        addNewRow(); // Call addNewRow function when add-row button is clicked
+    });
 
-            $.ajax({
-                url: '/products/store',
-                type: 'POST',
-                data: formData,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    var responseData = JSON.parse(response);
-                    if (responseData.status == 'error') {
-                        // swal fire kullanarak hata mesajlarını gösterelim
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Eksik Bilgi!',
-                            html: responseData.message // html gelen mesajı işledim.
-                        });
-                    } else {
-       
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Başarılı!',
-                            text: 'Ürün başarıyla kaydedildi!',
-                            showConfirmButton: false,
-                            timer: 1500  //1.5 saniye
-                        });
-                 
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Hata durumunda
-                    console.log(xhr.responseText);
+    // Event listener for form submission
+    $('form').submit(function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Clear formData array to avoid duplicate data on resubmission
+        formData = [];
+
+        // Collect main form data into formData
+        var mainFormData = new FormData($(this)[0]);
+
+        // Collect repeater data
+        $('.repeater-row').each(function(index, element) {
+            var row = $(element);
+            var rowData = {
+                musteriGrubu: row.find('select[name="musterigrubu"]').val(),
+                oncelik: row.find('select[name="oncelik"]').val(),
+                turu1: row.find('select[name="turu"]').eq(0).val(),
+                miktar1: row.find('input[type="number"]').eq(0).val(),
+                turu2: row.find('select[name="turu"]').eq(1).val(),
+                miktar2: row.find('input[type="number"]').eq(1).val(),
+                turu3: row.find('select[name="turu"]').eq(2).val(),
+                miktar3: row.find('input[type="number"]').eq(2).val(),
+                baslangicTarihi: row.find('input[name="baslangic_tarihi"]').val(),
+                bitisTarihi: row.find('input[name="bitis_tarihi"]').val()
+            };
+            formData.push(rowData);
+        });
+
+        // Add repeaterData array to mainFormData
+        mainFormData.append('repeaterData', JSON.stringify(formData));
+
+        // Perform AJAX request
+        $.ajax({
+            url: '/products/store', // Replace with your endpoint URL
+            type: 'POST',
+            data: mainFormData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                var responseData = JSON.parse(response);
+                if (responseData.status == 'error') {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Hata!',
-                        text: 'Ürünü oluştururken bir hata oluştu.'
+                        title: 'Eksik Bilgi!',
+                        html: responseData.message
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı!',
+                        text: 'Ürün başarıyla kaydedildi!',
+                        showConfirmButton: false,
+                        timer: 1500 // 1.5 seconds
                     });
                 }
-            });
-
-            return false;
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: 'Ürünü oluştururken bir hata oluştu.'
+                });
+            }
         });
-    });
-</script>
 
+        return false; // Prevent form submission
+    });
+
+    // Function to add new row dynamically
+    function addNewRow() {
+        var row = `
+            <div class="row repeater-row mt-3">
+                <div class="col-md-3">
+                    <label for="" class="form-label">Müşteri Grubu</label>
+                    <select name="musterigrubu" class="form-control">
+                        <option value="1">Grup 1</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="" class="form-label">Öncelik</label>
+                    <select name="oncelik" class="form-control">
+                        <option value="1">Öncelik 1</option>
+                        <option value="2">Öncelik 2</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="" class="form-label">Türü</label>
+                    <select name="turu" class="form-control">
+                        <option value="yuzde">Yüzde</option>
+                        <option value="fiyat">Fiyat</option>
+                    </select>
+                    <input type="number" class="form-control" placeholder="TL">
+                    <select name="turu" class="form-control mt-2">
+                        <option value="yuzde">Yüzde</option>
+                        <option value="fiyat">Fiyat</option>
+                    </select>
+                    <input type="number" class="form-control mb-1" placeholder="USD">
+                    <select name="turu" class="form-control mt-2">
+                        <option value="yuzde">Yüzde</option>
+                        <option value="fiyat">Fiyat</option>
+                    </select>
+                    <input type="number" class="form-control mb-1" placeholder="EURO">
+                </div>
+                <div class="col-md-2">
+                    <label for="" class="form-label">Başlangıç Tarihi</label>
+                    <input type="date" name="baslangic_tarihi" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label for="" class="form-label">Bitiş Tarihi</label>
+                    <input type="date" name="bitis_tarihi" class="form-control">
+                </div>
+            </div>`;
+
+        $('#repeater-form').append(row);
+    }
+});
+
+</script>

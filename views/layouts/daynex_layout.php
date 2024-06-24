@@ -20,6 +20,8 @@
     <!-- sweetalerts css / js -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+    <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.0.8/r-3.0.2/datatables.min.css" rel="stylesheet">
+    <script src="/node_modules/jquery.repeater/jquery.repeater.min.js"></script>
 
     <title><?php echo $title; ?></title>
 </head>
@@ -30,11 +32,6 @@
         <?php echo $content; ?>
         <!-- İçerik SON -->
     </div>
-
-
-
-
-
 
 </body>
 

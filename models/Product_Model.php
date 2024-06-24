@@ -37,6 +37,17 @@ class Product_Model extends CI_Model {
         return $this->db->count_all_results();
     }
 
+    public function getProductById($productId) {
+        // Örnek olarak, products tablosundan belirli bir productId'e sahip ürünü çekelim
+        $query = $this->db->get_where('products', array('id' => $productId));
+
+        if ($query->num_rows() > 0) {
+            return $query->row_array(); // Ürün bulunduysa bir dizi olarak döndür
+        } else {
+            return false; // Ürün bulunamazsa false döndür
+        }
+    }
+
 
 
 

@@ -12,7 +12,7 @@ class Products extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Product_Model', 'product'); // Product_Model al.
+        $this->load->model('Product_Model', 'product'); // Product_Model yükleniyor
     }
 
     public function create()
@@ -20,23 +20,23 @@ class Products extends CI_Controller
         $data['title'] = 'Ürün Oluştur';
         $data['content'] = $this->load->view('products/create', [], TRUE);
 
-        $this->load->view('layouts/daynex_layout', $data); // Layouta gönder
+        $this->load->view('layouts/daynex_layout', $data);
     }
 
     public function store()
     {
         // Ajax isteği mi kontrol et
         if (!$this->input->is_ajax_request()) {
-            show_404(); // Sadece Ajax istekleri için.
+            show_404(); // Sadece Ajax isteklerine izin ver
         }
 
         // Form validation kuralları
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
-        
+
         $this->form_validation->set_rules('urun_baslik_tr', 'Ürün Başlık', 'required');
         $this->form_validation->set_rules('urun_kodu', 'Ürün Kodu', 'required');
-
+        // Diğer gerekli alanlar için kuralları buraya ekleyebilirsiniz
 
         // Form validation işlemleri
         if ($this->form_validation->run() == FALSE) {
@@ -156,7 +156,6 @@ class Products extends CI_Controller
                 );
                 echo json_encode($response);
             }
-            
         }
     }
 
@@ -168,7 +167,29 @@ class Products extends CI_Controller
         $this->load->view('layouts/daynex_layout', $data);
     }
 
-    public function get_products() {
+    public function edit($productId) {
+        // Load product model if not already loaded
+        $this->load->model('Product_Model');
+    
+        // Get product details from model
+        $query = $this->db->get_where('products', array('id' => $productId));
+    
+        // Check if product exists
+        if ($query->num_rows() > 0) {
+            $data['product'] = $query->row_array(); // Ürün bulunduysa bir dizi olarak $data'ya ekleyelim
+            $data['title'] = 'Ürün Düzenle'; // Sayfa başlığı
+    
+            // Load edit view with data
+            $this->load->view('products/edit', $data);
+        } else {
+            show_404(); // Ürün bulunamazsa 404 hatası gösterelim veya başka bir işlem yapalım
+        }
+    }
+    
+
+
+    public function get_products()
+    {
 
         $list = $this->product->get_datatables();
         $data = array();
@@ -199,7 +220,7 @@ class Products extends CI_Controller
             });
             $output['recordsFiltered'] = count($output['data']);
         }
-        
+
         echo json_encode($output);
     }
 }
