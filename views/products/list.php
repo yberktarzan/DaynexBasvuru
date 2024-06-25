@@ -1,3 +1,8 @@
+<div class="row text-end mb-2">
+    <div class="col">
+        <a href="create" class="btn btn-warning">Ürün Ekle</a>
+    </div>
+</div>
 <table id="products-table" class="table table-striped table-bordered" style="width:100%">
     <thead>
         <tr>
@@ -24,7 +29,7 @@
                 "type": "POST"
             },
             language: {
-                url: '//cdn.datatables.net/plug-ins/2.0.8/i18n/tr.json',
+                url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/tr.json',
             },
             "columns": [{
                     "data": "0"
@@ -45,22 +50,12 @@
                     "data": null,
                     "render": function(data, type, row) {
                         return `
-                                <button type="button" class="btn btn-primary btn-sm" onclick="editProduct(${data[0]})">Düzenle</button>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteProduct(${data[0]})">Sil</button>
-                            `;
+                               <a type="button" class="btn btn-primary btn-sm" href="edit/${data[0]}">Düzenle</a>
+                               <a type="button" class="btn btn-danger btn-sm" href="delete/${data[0]}" onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">Sil</a>
+                                `;
                     }
                 }
             ]
         });
     });
-
-    function editProduct(productId) {
-        console.log("Düzenleme için ürün ID: ", productId);
-
-    }
-
-    function deleteProduct(productId) {
-        console.log("Silme için ürün ID: ", productId);
-
-    }
 </script>

@@ -153,22 +153,22 @@
                 <div class="mb-3">
                     <label for="stoktan_dus" class="form-label">Stoktan Düş</label>
                     <select class="form-control" id="stoktan_dus" name="stoktan_dus">
-                        <option value="evet">Evet</option>
-                        <option value="hayir">Hayır</option>
+                        <option value="1">Evet</option>
+                        <option value="0">Hayır</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="durum" class="form-label">Durum</label>
                     <select class="form-control" id="durum" name="durum">
-                        <option value="acik">Açık</option>
-                        <option value="kapali">Kapalı</option>
+                        <option value="1">Açık</option>
+                        <option value="0">Kapalı</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="ozellik_bolumu" class="form-label">Özellik Bölümü</label>
                     <select class="form-control" id="ozellik_bolumu" name="ozellik_bolumu">
-                        <option value="goster">Göster</option>
-                        <option value="gosterme">Gösterme</option>
+                        <option value="1">Göster</option>
+                        <option value="0">Gösterme</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -182,22 +182,22 @@
                 <div class="mb-3">
                     <label for="anasayfada_goster" class="form-label">Anasayfada Göster</label>
                     <select class="form-control" id="anasayfada_goster" name="anasayfada_goster">
-                        <option value="evet">Evet</option>
-                        <option value="hayir">Hayır</option>
+                        <option value="1">Evet</option>
+                        <option value="0">Hayır</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="yeni_urun" class="form-label">Yeni Ürün</label>
                     <select class="form-control" id="yeni_urun" name="yeni_urun">
-                        <option value="evet">Evet</option>
-                        <option value="hayir">Hayır</option>
+                        <option value="1">Evet</option>
+                        <option value="0">Hayır</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="taksit" class="form-label">Taksit</label>
                     <select class="form-control" id="taksit" name="taksit">
-                        <option value="evet">Evet</option>
-                        <option value="hayir">Hayır</option>
+                        <option value="1">Evet</option>
+                        <option value="0">Hayır</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -244,10 +244,6 @@
 
 
 
-
-
-
-
 <script>
     $(document).ready(function() {
         function initializeSummernote(elementId) {
@@ -263,8 +259,6 @@
                 ]
             });
         }
-
-
         initializeSummernote('urun_aciklama_tr');
         initializeSummernote('urun_aciklama_en');
     });
@@ -273,88 +267,88 @@
 
 <script>
     $(document).ready(function() {
-    // Array to store form data including repeater data
-    var formData = [];
+        // Array to store form data including repeater data
+        var formData = [];
 
-    // Event listener for adding new row
-    $('#add-row').click(function() {
-        addNewRow(); // Call addNewRow function when add-row button is clicked
-    });
-
-    // Event listener for form submission
-    $('form').submit(function(event) {
-        event.preventDefault(); // Prevent form submission
-
-        // Clear formData array to avoid duplicate data on resubmission
-        formData = [];
-
-        // Collect main form data into formData
-        var mainFormData = new FormData($(this)[0]);
-
-        // Collect repeater data
-        $('.repeater-row').each(function(index, element) {
-            var row = $(element);
-            var rowData = {
-                musteriGrubu: row.find('select[name="musterigrubu"]').val(),
-                oncelik: row.find('select[name="oncelik"]').val(),
-                turu1: row.find('select[name="turu"]').eq(0).val(),
-                miktar1: row.find('input[type="number"]').eq(0).val(),
-                turu2: row.find('select[name="turu"]').eq(1).val(),
-                miktar2: row.find('input[type="number"]').eq(1).val(),
-                turu3: row.find('select[name="turu"]').eq(2).val(),
-                miktar3: row.find('input[type="number"]').eq(2).val(),
-                baslangicTarihi: row.find('input[name="baslangic_tarihi"]').val(),
-                bitisTarihi: row.find('input[name="bitis_tarihi"]').val()
-            };
-            formData.push(rowData);
+        // Event listener for adding new row
+        $('#add-row').click(function() {
+            addNewRow(); // Call addNewRow function when add-row button is clicked
         });
 
-        // Add repeaterData array to mainFormData
-        mainFormData.append('repeaterData', JSON.stringify(formData));
+        // Event listener for form submission
+        $('form').submit(function(event) {
+            event.preventDefault(); // Prevent form submission
 
-        // Perform AJAX request
-        $.ajax({
-            url: '/products/store', // Replace with your endpoint URL
-            type: 'POST',
-            data: mainFormData,
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                var responseData = JSON.parse(response);
-                if (responseData.status == 'error') {
+            // Clear formData array to avoid duplicate data on resubmission
+            formData = [];
+
+            // Collect main form data into formData
+            var mainFormData = new FormData($(this)[0]);
+
+            // Collect repeater data
+            $('.repeater-row').each(function(index, element) {
+                var row = $(element);
+                var rowData = {
+                    musteriGrubu: row.find('select[name="musterigrubu"]').val(),
+                    oncelik: row.find('select[name="oncelik"]').val(),
+                    turu1: row.find('select[name="turu"]').eq(0).val(),
+                    miktar1: row.find('input[type="number"]').eq(0).val(),
+                    turu2: row.find('select[name="turu"]').eq(1).val(),
+                    miktar2: row.find('input[type="number"]').eq(1).val(),
+                    turu3: row.find('select[name="turu"]').eq(2).val(),
+                    miktar3: row.find('input[type="number"]').eq(2).val(),
+                    baslangicTarihi: row.find('input[name="baslangic_tarihi"]').val(),
+                    bitisTarihi: row.find('input[name="bitis_tarihi"]').val()
+                };
+                formData.push(rowData);
+            });
+
+            // Add repeaterData array to mainFormData
+            mainFormData.append('repeaterData', JSON.stringify(formData));
+
+            // Perform AJAX request
+            $.ajax({
+                url: '/products/store', // Replace with your endpoint URL
+                type: 'POST',
+                data: mainFormData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var responseData = JSON.parse(response);
+                    if (responseData.status == 'error') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Eksik Bilgi!',
+                            html: responseData.message
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı!',
+                            text: 'Ürün başarıyla kaydedildi!',
+                            showConfirmButton: false,
+                            timer: 1500 // 1.5 seconds
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Eksik Bilgi!',
-                        html: responseData.message
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Başarılı!',
-                        text: 'Ürün başarıyla kaydedildi!',
-                        showConfirmButton: false,
-                        timer: 1500 // 1.5 seconds
+                        title: 'Hata!',
+                        text: 'Ürünü oluştururken bir hata oluştu.'
                     });
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Hata!',
-                    text: 'Ürünü oluştururken bir hata oluştu.'
-                });
-            }
+            });
+
+            return false; // Prevent form submission
         });
 
-        return false; // Prevent form submission
-    });
-
-    // Function to add new row dynamically
-    function addNewRow() {
-        var row = `
+        // Function to add new row dynamically
+        function addNewRow() {
+            var row = `
             <div class="row repeater-row mt-3">
                 <div class="col-md-3">
                     <label for="" class="form-label">Müşteri Grubu</label>
@@ -397,8 +391,7 @@
                 </div>
             </div>`;
 
-        $('#repeater-form').append(row);
-    }
-});
-
+            $('#repeater-form').append(row);
+        }
+    });
 </script>
